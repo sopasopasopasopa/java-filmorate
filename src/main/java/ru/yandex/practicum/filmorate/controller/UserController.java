@@ -52,7 +52,7 @@ public class UserController {
         return existingUser;
     }
 
-    public void validateUser (User user) {
+    public void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             log.error("Ошибка валидации пользователя: Электронная почта не может быть пустой и должна содержать символ @");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
