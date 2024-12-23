@@ -37,7 +37,7 @@ public class UserController {
                 .filter(u -> u.getId().equals(user.getId()))
                 .findFirst()
                 .orElseThrow(() -> {
-                    log.error("Ошибка обновления пользователя: {}", "Пользователь не найден");
+                    log.error("Ошибка обновления пользователя: Пользователь с id {} не найден", user.getId());
                     return new ConditionsNotMetException("Пользователь не найден");
                 });
 
@@ -52,17 +52,25 @@ public class UserController {
         return existingUser;
     }
 
-    public void validateUser(User user) {
+    public void validateUser (User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
-            log.error("Ошибка валидации пользователя: {}", "Электронная почта не может быть пустой и должна содержать символ @");
+            log.error("Ошибка валидации пользователя: Электронная почта не может быть пустой и должна содержать символ @");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
         }
         if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
-            log.error("Ошибка валидации пользователя: {}", "Логин не может быть пустым и содержать пробелы");
+            log.error("Ошибка валидации пользователя: Логин не может быть пустым и содержать пробелы");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
         }
-        if (user.getBirthday() != null && user.getBirthday().isAfter(Instant.now())) {
-            log.error("Ошибка валидации пользователя: {}", "Дата рождения не может быть в будущем");
+        if (user.getName() == null || user.getName().isEmpty()) {
+            log.error("Ошибка валидации пользователя: Имя не может быть пустым");
+            throw new ValidationException("Имя не может быть пустым");
+        }
+        if (user.getBirthday() == null) {
+            log.error("Ошибка валидации пользователя: Дата рождения не может быть пустой");
+            throw new ValidationException("Дата рождения не может быть пустой");
+        }
+        if (user.getBirthday().isAfter(Instant.now())) {
+            log.error("Ошибка валидации пользователя: Дата рождения не может быть в будущем");
             throw new ValidationException("Дата рождения не может быть в будущем");
         }
     }
