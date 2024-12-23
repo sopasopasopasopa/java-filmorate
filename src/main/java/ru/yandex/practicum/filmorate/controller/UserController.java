@@ -19,7 +19,7 @@ public class UserController {
     private Long nextId = 1L;
 
     @PostMapping
-    public User createUser (@Valid @RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         user.setId(getNextId());
         users.add(user);
         log.info("Пользователь {} успешно добавлен", user);
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser (@RequestBody User user) {
+    public User updateUser(@RequestBody User user) {
         if (user.getId() == null) {
             log.error("Ошибка обновления пользователя: {}", "Id должен быть указан");
             throw new ConditionsNotMetException("Id должен быть указан");
@@ -52,7 +52,7 @@ public class UserController {
         return existingUser ;
     }
 
-    public void validateUser (User user) {
+    public void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             log.error("Ошибка валидации пользователя: {}", "Электронная почта не может быть пустой и должна содержать символ @");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
