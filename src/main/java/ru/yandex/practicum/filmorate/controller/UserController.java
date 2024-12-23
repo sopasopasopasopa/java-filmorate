@@ -41,15 +41,15 @@ public class UserController {
                     return new ConditionsNotMetException("Пользователь не найден");
                 });
 
-        validateUser (user);
+        validateUser(user);
 
         existingUser.setEmail(user.getEmail());
         existingUser.setLogin(user.getLogin());
         existingUser.setName(user.getName());
         existingUser.setBirthday(user.getBirthday());
 
-        log.info("Пользователь {} успешно обновлен", existingUser );
-        return existingUser ;
+        log.info("Пользователь {} успешно обновлен", existingUser);
+        return existingUser;
     }
 
     public void validateUser(User user) {
