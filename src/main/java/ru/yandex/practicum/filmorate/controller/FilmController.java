@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.*;
@@ -19,8 +20,7 @@ public class FilmController {
     private Long nextId = 1L;
 
     @PostMapping
-    public Film addFilm(@RequestBody Film film) {
-        validateFilm(film);
+    public Film addFilm(@Valid @RequestBody Film film) {
         film.setId(getNextId());
         films.add(film);
         log.info("Фильм {} успешно добавлен", film);
