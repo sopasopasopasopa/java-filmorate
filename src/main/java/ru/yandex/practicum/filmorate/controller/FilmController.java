@@ -31,7 +31,7 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         if (film.getId() == null) {
-            log.error("Ошибка обновления фильма: {}", "Id должен быть указан");
+            log.error("Ошибка обновления фильма: Id должен быть указан");
             throw new ConditionsNotMetException("Id должен быть указан");
         }
 
@@ -39,7 +39,7 @@ public class FilmController {
                 .filter(f -> f.getId().equals(film.getId()))
                 .findFirst()
                 .orElseThrow(() -> {
-                    log.error("Ошибка обновления фильма: {}", "Фильм не найден");
+                    log.error("Ошибка обновления фильма: Фильм не найден");
                     return new ConditionsNotMetException("Фильм не найден");
                 });
 
@@ -56,23 +56,18 @@ public class FilmController {
 
     public void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
-            log.error("Ошибка валидации фильма: {}", "Название фильма не может быть пустым");
+            log.error("Ошибка валидации фильма: Название фильма не может быть пустым");
             throw new ValidationException("Название фильма не может быть пустым");
         }
-        if (film.getDescription() != null && film.getDescription().length() > 200) {
-            log.error("Ошибка валидации фильма: {}", "Максимальная длина описания — 200 символов");
-            throw new ValidationException("Максимальная длина описания — 200 символов");
-        }
         if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28).atStartOfDay(ZoneOffset.UTC).toInstant())) {
-            log.error("Ошибка валидации фильма: {}", "Дата релиза не может быть раньше 28 декабря 1895 года");
+            log.error("Ошибка валидации фильма: Дата релиза не может быть раньше 28 декабря 1895 года");
             throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
         }
         if (film.getDuration() == null || film.getDuration().isNegative() || film.getDuration().isZero()) {
-            log.error("Ошибка валидации фильма: {}", "Продолжительность фильма должна быть положительным числом");
+            log.error("Ошибка валидации фильма: Продолжительность фильма должна быть положительным числом");
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
     }
-
 
     @GetMapping
     public List<Film> getAllFilms() {

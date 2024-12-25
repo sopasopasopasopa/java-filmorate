@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        validateUser(user);
+        validateUser (user);
         user.setId(getNextId());
         users.add(user);
         log.info("Пользователь {} успешно добавлен", user);
@@ -30,7 +30,7 @@ public class UserController {
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         if (user.getId() == null) {
-            log.error("Ошибка обновления пользователя: {}", "Id должен быть указан");
+            log.error("Ошибка обновления пользователя: Id должен быть указан");
             throw new ConditionsNotMetException("Id должен быть указан");
         }
 
@@ -42,7 +42,7 @@ public class UserController {
                     return new ConditionsNotMetException("Пользователь не найден");
                 });
 
-        validateUser(user);
+        validateUser (user);
 
         existingUser.setEmail(user.getEmail());
         existingUser.setLogin(user.getLogin());
@@ -53,7 +53,7 @@ public class UserController {
         return existingUser;
     }
 
-    public void validateUser(User  user) {
+    public void validateUser (User user) {
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Ошибка валидации пользователя: Электронная почта не может быть пустой и должна содержать символ @");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
@@ -63,8 +63,7 @@ public class UserController {
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
         }
         if (user.getName() == null || user.getName().isBlank()) {
-            log.error("Ошибка валидации пользователя: Имя не может быть пустым");
-            throw new ValidationException("Имя не может быть пустым");
+            user.setName(user.getLogin()); // Устанавливаем имя по умолчанию, если оно пустое
         }
         if (user.getBirthday() == null) {
             log.error("Ошибка валидации пользователя: Дата рождения не может быть пустой");
