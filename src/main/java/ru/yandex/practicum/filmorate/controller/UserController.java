@@ -20,6 +20,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
+        validateUser(user);
         user.setId(getNextId());
         users.add(user);
         log.info("Пользователь {} успешно добавлен", user);
@@ -27,13 +28,13 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         if (user.getId() == null) {
             log.error("Ошибка обновления пользователя: {}", "Id должен быть указан");
             throw new ConditionsNotMetException("Id должен быть указан");
         }
 
-        User existingUser  = users.stream()
+        User existingUser = users.stream()
                 .filter(u -> u.getId().equals(user.getId()))
                 .findFirst()
                 .orElseThrow(() -> {
@@ -49,19 +50,19 @@ public class UserController {
         existingUser.setBirthday(user.getBirthday());
 
         log.info("Пользователь {} успешно обновлен", existingUser);
-        return existingUser;
+        return existingUser  ;
     }
 
-    public void validateUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
+    public void validateUser(User  user) {
+        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Ошибка валидации пользователя: Электронная почта не может быть пустой и должна содержать символ @");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
         }
-        if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
+        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             log.error("Ошибка валидации пользователя: Логин не может быть пустым и содержать пробелы");
             throw new ValidationException("Логин не может быть пустым и содержать пробелы");
         }
-        if (user.getName() == null || user.getName().isEmpty()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             log.error("Ошибка валидации пользователя: Имя не может быть пустым");
             throw new ValidationException("Имя не может быть пустым");
         }

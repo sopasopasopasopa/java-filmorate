@@ -21,6 +21,7 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
+        validateFilm(film);
         film.setId(getNextId());
         films.add(film);
         log.info("Фильм {} успешно добавлен", film);
@@ -28,7 +29,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         if (film.getId() == null) {
             log.error("Ошибка обновления фильма: {}", "Id должен быть указан");
             throw new ConditionsNotMetException("Id должен быть указан");
@@ -44,25 +45,17 @@ public class FilmController {
 
         validateFilm(film);
 
-        if (film.getName() != null) {
-            existingFilm.setName(film.getName());
-        }
-        if (film.getDescription() != null) {
-            existingFilm.setDescription(film.getDescription());
-        }
-        if (film.getReleaseDate() != null) {
-            existingFilm.setReleaseDate(film.getReleaseDate());
-        }
-        if (film.getDuration() != null) {
-            existingFilm.setDuration(film.getDuration());
-        }
+        existingFilm.setName(film.getName());
+        existingFilm.setDescription(film.getDescription());
+        existingFilm.setReleaseDate(film.getReleaseDate());
+        existingFilm.setDuration(film.getDuration());
 
         log.info("Фильм {} успешно обновлен", existingFilm);
         return existingFilm;
     }
 
     public void validateFilm(Film film) {
-        if (film.getName() == null || film.getName().isEmpty()) {
+        if (film.getName() == null || film.getName().isBlank()) {
             log.error("Ошибка валидации фильма: {}", "Название фильма не может быть пустым");
             throw new ValidationException("Название фильма не может быть пустым");
         }
