@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
@@ -19,6 +20,7 @@ public class UserController {
     private Long nextId = 1L;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED) // Устанавливаем статус 201
     public User createUser(@Valid @RequestBody User user) {
         validateUser(user);
         user.setId(getNextId());
