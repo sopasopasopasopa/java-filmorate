@@ -50,7 +50,7 @@ public class UserController {
         existingUser.setBirthday(user.getBirthday());
 
         log.info("Пользователь {} успешно обновлен", existingUser);
-        return existingUser  ;
+        return existingUser;
     }
 
     public void validateUser(User  user) {
