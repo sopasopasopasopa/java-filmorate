@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        validateUser (user);
+        validateUser(user);
         user.setId(getNextId());
         users.add(user);
         log.info("Пользователь {} успешно добавлен", user);
@@ -42,7 +42,7 @@ public class UserController {
                     return new ConditionsNotMetException("Пользователь не найден");
                 });
 
-        validateUser (user);
+        validateUser(user);
 
         existingUser.setEmail(user.getEmail());
         existingUser.setLogin(user.getLogin());
@@ -53,7 +53,7 @@ public class UserController {
         return existingUser;
     }
 
-    public void validateUser (User user) {
+    public void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Ошибка валидации пользователя: Электронная почта не может быть пустой и должна содержать символ @");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
