@@ -59,6 +59,10 @@ public class FilmController {
             log.error("Ошибка валидации фильма: Название фильма не может быть пустым");
             throw new ValidationException("Название фильма не может быть пустым");
         }
+        if (film.getDescription() != null && film.getDescription().length() > 200) {
+            log.error("Ошибка валидации фильма: Максимальная длина описания — 200 символов");
+            throw new ValidationException("Максимальная длина описания — 200 символов");
+        }
         if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28).atStartOfDay(ZoneOffset.UTC).toInstant())) {
             log.error("Ошибка валидации фильма: Дата релиза не может быть раньше 28 декабря 1895 года");
             throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
