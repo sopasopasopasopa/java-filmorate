@@ -16,20 +16,20 @@ import java.util.Map;
 @Service
 public class FilmService {
 
-    private static final LocalDate MIN_RELESE_DATE = LocalDate.of(1895, 12, 28);
+    private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private Map<Long, Film> films = new HashMap<>();
     private static Logger log = LoggerFactory.getLogger(FilmService.class);
 
     public Film filmCreate(Film film) {
-        if (film.getTitle() == null || film.getTitle().isEmpty()) {
-            log.warn("Film title {}", film.getTitle());
+        if (film.getName() == null || film.getName().isEmpty()) {
+            log.warn("Film title {}", film.getName());
             throw new ValidationException("Film title should not be empty");
         }
         if (film.getDescription().length() >= 200) {
             log.warn("Film description {}", film.getDescription());
             throw new ValidationException("Maximum description length — 200 characters");
         }
-        if (film.getReleaseDate().isBefore(MIN_RELESE_DATE)) {
+        if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
             log.warn("Film releaseDate {}", film.getReleaseDate());
             throw new ValidationException("Film release date: no earlier than 28.12.1895");
         }
@@ -40,7 +40,7 @@ public class FilmService {
 
         Film createFilm = Film.builder()
                 .id(nextId())
-                .title(film.getTitle())
+                .name(film.getName())
                 .description(film.getDescription())
                 .releaseDate(film.getReleaseDate())
                 .duration(film.getDuration())
@@ -65,7 +65,7 @@ public class FilmService {
 
         Film newFilm = Film.builder()
                 .id(existingFilm.getId())
-                .title(updateFilm.getTitle())
+                .name(updateFilm.getName())
                 .description(updateFilm.getDescription())
                 .releaseDate(updateFilm.getReleaseDate())
                 .duration(updateFilm.getDuration())

@@ -21,7 +21,7 @@ public class FilmServiceTest {
     @Test
     void shouldThrowExceptionWhenTitleIsEmpty() {
         Film film = Film.builder()
-                .title("")
+                .name("")
                 .build();
         assertThrows(ValidationException.class, () -> filmService.filmCreate(film));
     }
@@ -30,7 +30,7 @@ public class FilmServiceTest {
     void shouldThrowExceptionWhenDescriptionIsTooLong() {
         String longDescription = "a".repeat(201);
         Film film = Film.builder()
-                .title("Valid Title")
+                .name("Valid Title")
                 .description(longDescription)
                 .build();
         assertThrows(ValidationException.class, () -> filmService.filmCreate(film));
