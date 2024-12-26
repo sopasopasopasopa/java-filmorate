@@ -96,7 +96,7 @@ public class UserServiceTest {
                 .birthday(LocalDate.of(2000, 1, 1))
                 .build();
         User createdUser  = userService.userCreate(user);
-        assertEquals("validLogin", createdUser .getName());
+        assertEquals("validLogin", createdUser.getName());
     }
 
     @Test
