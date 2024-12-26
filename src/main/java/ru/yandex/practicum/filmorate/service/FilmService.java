@@ -8,7 +8,9 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -71,6 +73,10 @@ public class FilmService {
 
         films.put(newFilm.getId(), newFilm);
         return updateFilm;
+    }
+
+    public List<Film> getAllFilms() {
+        return new ArrayList<>(films.values());
     }
 
     private long nextId() {

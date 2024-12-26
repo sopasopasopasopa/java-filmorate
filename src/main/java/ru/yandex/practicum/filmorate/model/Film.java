@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @Data
 public class Film {
     Long id;
+    @NotBlank
     String title;
     String description;
     LocalDate releaseDate;
