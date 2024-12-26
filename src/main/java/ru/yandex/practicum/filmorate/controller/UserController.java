@@ -26,34 +26,34 @@ public class UserController {
             log.info("User  created: {}", user);
             return user;
         } catch (ValidationException e) {
-            log.error("Validation failed for user: {}. Reason: {}", user, e.getMessage()); // Логируем ошибку валидации
+            log.error("Validation failed for user: {}. Reason: {}", user, e.getMessage());
             throw e;
         }
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable int id, @RequestBody User updatedUser ) {
+    public User updateUser(@PathVariable int id, @RequestBody User updatedUser) {
         try {
-            validateUser(updatedUser );
+            validateUser(updatedUser);
             for (int i = 0; i < users.size(); i++) {
                 if (users.get(i).getId() == id) {
                     updatedUser.setId(id);
-                    users.set(i, updatedUser );
-                    log.info("User  updated: {}", updatedUser); // Логируем обновление пользователя
-                    return updatedUser ;
+                    users.set(i, updatedUser);
+                    log.info("User  updated: {}", updatedUser);
+                    return updatedUser;
                 }
             }
-            log.error("User  not found with id: {}", id); // Логируем, если пользователь не найден
+            log.error("User  not found with id: {}", id);
             throw new RuntimeException("User not found");
         } catch (ValidationException e) {
-            log.error("Validation failed for user: {}. Reason: {}", updatedUser , e.getMessage()); // Логируем ошибку валидации
-            throw e; // Пробрасываем исключение дальше
+            log.error("Validation failed for user: {}. Reason: {}", updatedUser, e.getMessage());
+            throw e;
         }
     }
 
     @GetMapping
     public List<User> getAllUsers() {
-        log.info("Fetching all users. Total users: {}", users.size()); // Логируем получение всех пользователей
+        log.info("Fetching all users. Total users: {}", users.size());
         return users;
     }
 
