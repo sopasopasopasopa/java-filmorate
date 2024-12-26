@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -46,6 +47,29 @@ public class UserService {
 
         return createUser;
 
+    }
+
+    public User userUpdate(User updateUser) {
+        if (updateUser.getId() == null) {
+            log.warn("Id is empty");
+            throw new ValidationException("Id should not be empty");
+        }
+        if (!users.containsKey(updateUser.getId())) {
+            log.warn("Id not found {}", updateUser.getId());
+            throw new NotFoundException("User with this Id not found");
+        }
+        User existingUser = users.get(updateUser.getId());
+
+        User newUser = User.builder()
+                .id(existingUser.getId())
+                .email(updateUser.getEmail())
+                .login(updateUser.getLogin())
+                .name(updateUser.getName())
+                .birthday(updateUser.getBirthday())
+                .build();
+
+        users.put(newUser.getId(), newUser);
+        return newUser;
     }
 
     private long nextId() {
