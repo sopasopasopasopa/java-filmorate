@@ -140,6 +140,6 @@ public class UserControllerTest {
         user.setBirthday(LocalDate.of(2000, 1, 1));
 
         // Не должно выбрасывать исключение
-        userController.validateUser (user);
+        userController.validateUser(user);
     }
 }
