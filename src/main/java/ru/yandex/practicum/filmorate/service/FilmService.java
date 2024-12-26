@@ -25,7 +25,7 @@ public class FilmService {
             log.warn("Film title {}", film.getTitle());
             throw new ValidationException("Film title should not be empty");
         }
-        if (film.getDescription().length() >= 200) {
+        if (film.getDescription() != null && film.getDescription().length() >= 200) {
             log.warn("Film description {}", film.getDescription());
             throw new ValidationException("Maximum description length — 200 characters");
         }
