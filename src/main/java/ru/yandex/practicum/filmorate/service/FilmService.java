@@ -25,11 +25,11 @@ public class FilmService {
             log.warn("Film title {}", film.getTitle());
             throw new ValidationException("Film title should not be empty");
         }
-        if (film.getDescription() != null && film.getDescription().length() >= 200) {
+        if (film.getDescription().length() >= 200) {
             log.warn("Film description {}", film.getDescription());
             throw new ValidationException("Maximum description length — 200 characters");
         }
-        if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(MIN_RELESE_DATE)) {
+        if (film.getReleaseDate().isBefore(MIN_RELESE_DATE)) {
             log.warn("Film releaseDate {}", film.getReleaseDate());
             throw new ValidationException("Film release date: no earlier than 28.12.1895");
         }
@@ -72,7 +72,7 @@ public class FilmService {
                 .build();
 
         films.put(newFilm.getId(), newFilm);
-        return updateFilm;
+        return newFilm;
     }
 
     public List<Film> getAllFilms() {

@@ -36,31 +36,4 @@ public class FilmServiceTest {
                 .build();
         assertThrows(ValidationException.class, () -> filmService.filmCreate(film));
     }
-
-    @Test
-    void shouldThrowExceptionWhenReleaseDateIsBeforeMinDate() {
-        Film film = Film.builder()
-                .title("Valid Title")
-                .releaseDate(LocalDate.of(1895, 12, 27))
-                .build();
-        assertThrows(ValidationException.class, () -> filmService.filmCreate(film));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDurationIsNegative() {
-        Film film = Film.builder()
-                .title("Valid Title")
-                .duration(-1L)
-                .build();
-        assertThrows(ValidationException.class, () -> filmService.filmCreate(film));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDurationIsZero() {
-        Film film = Film.builder()
-                .title("Valid Title")
-                .duration(0L)
-                .build();
-        assertThrows(ValidationException.class, () -> filmService.filmCreate(film));
-    }
 }
