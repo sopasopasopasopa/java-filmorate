@@ -32,7 +32,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void shouldCreateUser () {
+    public void shouldCreateUser() {
         User createdUser = userService.userCreate(user);
 
         Assertions.assertNotNull(createdUser);
@@ -41,13 +41,13 @@ class UserServiceTest {
     }
 
     @Test
-    public void shouldUpdateUser () {
+    public void shouldUpdateUser() {
         User createdUser = userService.userCreate(user);
         createdUser.setName("Updated User");
 
-        User updatedUser = userService.userUpdate(createdUser );
+        User updatedUser = userService.userUpdate(createdUser);
 
-        Assertions.assertNotNull(updatedUser );
+        Assertions.assertNotNull(updatedUser);
         Assertions.assertEquals("Updated User", updatedUser.getName());
     }
 
