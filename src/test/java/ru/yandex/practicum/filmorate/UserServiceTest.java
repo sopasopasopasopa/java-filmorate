@@ -35,9 +35,9 @@ class UserServiceTest {
     public void shouldCreateUser () {
         User createdUser = userService.userCreate(user);
 
-        Assertions.assertNotNull(createdUser );
-        Assertions.assertEquals("testLogin", createdUser .getLogin());
-        Assertions.assertEquals(1L, createdUser .getId());
+        Assertions.assertNotNull(createdUser);
+        Assertions.assertEquals("testLogin", createdUser.getLogin());
+        Assertions.assertEquals(1L, createdUser.getId());
     }
 
     @Test
@@ -93,7 +93,7 @@ class UserServiceTest {
 
     @Test
     public void shouldThrowValidationExceptionWhenUserIsInvalid() {
-        User invalidUser  = User.builder()
+        User invalidUser = User.builder()
                 .email("")
                 .login("")
                 .name("")
