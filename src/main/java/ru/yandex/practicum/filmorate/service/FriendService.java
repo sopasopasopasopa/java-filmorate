@@ -52,7 +52,7 @@ public class FriendService {
 
     public Set<Long> deleteFriend(@NotNull Long userId, @NotNull Long friendId) {
         User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
 
         if (user == null || friend == null) {
             log.error("User with ID {} or friend with ID {} not found", userId, friendId);
@@ -69,6 +69,7 @@ public class FriendService {
 
         return user.getFriends();
     }
+
 
     public List<User> getAllFriends(@NotNull Long userId) {
         User user = userStorage.getUserById(userId);
