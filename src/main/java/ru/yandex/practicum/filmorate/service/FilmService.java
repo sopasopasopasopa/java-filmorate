@@ -13,8 +13,6 @@ import java.util.*;
 public class FilmService {
 
     private final FilmStorage filmStorage;
-    private static Logger log = LoggerFactory.getLogger(FilmService.class);
-    private Map<Long, Set<Long>> filmLikes = new HashMap<>();
 
     public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;

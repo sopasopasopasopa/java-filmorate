@@ -12,8 +12,6 @@ import java.util.*;
 public class UserService {
 
     private final UserStorage userStorage;
-    private static Logger log = LoggerFactory.getLogger(UserService.class);
-    private Map<Long, Set<Long>> friends = new HashMap<>();
 
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;

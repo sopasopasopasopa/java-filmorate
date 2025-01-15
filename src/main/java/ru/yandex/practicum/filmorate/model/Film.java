@@ -16,7 +16,6 @@ import java.util.Set;
 public class Film {
     Long id;
 
-    @NotBlank(message = "Film title should not be empty")
     String name;
 
     String description;
