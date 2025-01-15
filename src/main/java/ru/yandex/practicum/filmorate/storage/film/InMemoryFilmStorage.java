@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -23,18 +20,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film addFilm(Film film) {
         validateFilm(film);
-        Film createFilm = Film.builder()
-                .id(nextId())
-                .name(film.getName())
-                .description(film.getDescription())
-                .releaseDate(film.getReleaseDate())
-                .duration(film.getDuration())
-                .build();
+        film.setId(nextId());
+        film.setUserLikes(new HashSet<>());
 
-        films.put(createFilm.getId(), createFilm);
+        films.put(film.getId(), film);
         log.info("Film created {} and added to storage {}", film, film.getId());
 
-        return createFilm;
+        return film;
     }
 
     @Override
