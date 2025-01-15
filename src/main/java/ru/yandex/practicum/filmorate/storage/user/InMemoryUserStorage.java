@@ -92,6 +92,11 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(id);
     }
 
+    @Override
+    public void clear() {
+        users.clear();
+    }
+
     private long nextId() {
         return users.keySet()
                 .stream()
