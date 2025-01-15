@@ -27,8 +27,8 @@ public class LikeService {
     public Set<Long> addLike(@NotNull Long filmId, @NotNull Long userId) {
         log.debug("Adding like from user {} to film {}", userId, filmId);
 
-        Film LikedFilm = filmStorage.getFilmById(filmId);
-        if (LikedFilm == null) {
+        Film likedFilm = filmStorage.getFilmById(filmId);
+        if (likedFilm == null) {
             log.error("Film with ID {} not found", filmId);
             throw new ValidationException("Film not found");
         }
@@ -36,17 +36,17 @@ public class LikeService {
             log.error("User  with ID {} who is adding the like does not exist", userId);
             throw new NotFoundException("User with Id " + userId + " who wants to like does not exist");
         }
-        if (!LikedFilm.getUserLikes().add(userId)) {
+        if (!likedFilm.getUserLikes().add(userId)) {
             log.warn("User  {} has already liked film {}", userId, filmId);
             throw new ValidationException("User can only like a film once");
         }
 
-        LikedFilm.setLikes(LikedFilm.getLikes() + 1);
-        filmStorage.updateFilm(LikedFilm);
+        likedFilm.setLikes(likedFilm.getLikes() + 1);
+        filmStorage.updateFilm(likedFilm);
 
         log.info("User  {} successfully liked film {}", userId, filmId);
 
-        return LikedFilm.getUserLikes();
+        return likedFilm.getUserLikes();
     }
 
     public Set<Long> deleteLike(@NotNull Long filmId, @NotNull Long userId) {
