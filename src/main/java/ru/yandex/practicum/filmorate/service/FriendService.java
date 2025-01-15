@@ -104,9 +104,9 @@ public class FriendService {
     }
 
     private Set<Long> findMutualFriends(User user, User friend) {
-        Set<Long> friendsOfUser  = user.getFriends();
-        friendsOfUser .retainAll(friend.getFriends());
-        return friendsOfUser ;
+        Set<Long> friendsOfUser = user.getFriends();
+        friendsOfUser.retainAll(friend.getFriends());
+        return friendsOfUser;
     }
 
 
