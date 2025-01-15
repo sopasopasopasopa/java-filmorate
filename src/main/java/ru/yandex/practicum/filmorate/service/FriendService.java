@@ -24,13 +24,17 @@ public class FriendService {
     }
 
     public Set<Long> addFriends(@NotNull Long userId, @NotNull Long friendId) {
+        log.info("Attempting to add friend: user ID: {}, friend ID: {}", userId, friendId);
+
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
 
         if (user == null || friend == null) {
+            log.error("User with ID {} or friend with ID {} not found", userId, friendId);
             throw new NotFoundException("User with Id: " + userId + " or friend with Id " + friendId + " not found");
         }
         if (user.getFriends().contains(friendId)) {
+            log.error("User with ID {} is already a friend", friendId);
             throw new ValidationException("User is already a friend");
         }
 
@@ -38,6 +42,10 @@ public class FriendService {
         friend.getFriends().add(userId);
         userStorage.updateUser(user);
         userStorage.updateUser(friend);
+
+        log.info("User {} successfully added user {} as a friend", userId, friendId);
+        log.info("Friend list of user {}: {}", user.getName(), user.getFriends());
+        log.info("Friend list of user {}: {}", friend.getName(), friend.getFriends());
 
         return user.getFriends();
     }
@@ -47,6 +55,7 @@ public class FriendService {
         User friend = userStorage.getUserById(userId);
 
         if (user == null || friend == null) {
+            log.error("User with ID {} or friend with ID {} not found", userId, friendId);
             throw new NotFoundException("User or friend with Id " + userId + " " + friendId + " not found");
         }
 
@@ -56,14 +65,18 @@ public class FriendService {
         userStorage.updateUser(user);
         userStorage.updateUser(friend);
 
+        log.info("User {} successfully removed user {} from their friends", userId, friendId);
+
         return user.getFriends();
     }
 
     public List<User> getAllFriends(@NotNull Long userId) {
         User user = userStorage.getUserById(userId);
         if (user == null) {
+            log.error("User with ID {} not found", userId);
             throw new NotFoundException("User with Id " + userId + " not found.");
         }
+        log.info("User {} requested the list of friends: {}", userId, user.getFriends());
 
         Set<Long> friendsIds = user.getFriends();
         List<User> friendList = friendsIds.stream()
@@ -73,10 +86,12 @@ public class FriendService {
     }
 
     public List<User> listMutualFriends(@NotNull Long userId, @NotNull Long friendId) {
+        log.info("Attempting to find mutual friends between users with ID: {} and {}", userId, friendId);
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
 
         if (user == null || friend == null) {
+            log.error("User with ID {}, or friend with ID {} not found", userId, friendId);
             throw new NotFoundException("One of the users with ID: " + userId + " or " + friendId + " not found");
         }
 

@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -16,6 +18,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private Map<Long, Film> films = new HashMap<>();
 
+    private static Logger log = LoggerFactory.getLogger(InMemoryFilmStorage.class);
+
     @Override
     public Film addFilm(Film film) {
         validateFilm(film);
@@ -28,6 +32,8 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .build();
 
         films.put(createFilm.getId(), createFilm);
+        log.info("Film created {} and added to storage {}", film, film.getId());
+
         return createFilm;
     }
 
@@ -42,6 +48,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         validateFilm(updateFilm);
 
         films.put(updateFilm.getId(), updateFilm);
+
+        log.info("Film updated with Id {}", updateFilm.getId());
         return updateFilm;
     }
 
@@ -67,15 +75,19 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isEmpty()) {
+            log.warn("Film name {}", film.getName());
             throw new ValidationException("Film title should not be empty");
         }
         if (film.getDescription().length() >= 200) {
+            log.warn("Film description {}", film.getDescription());
             throw new ValidationException("Maximum description length — 200 characters");
         }
         if (film.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
+            log.warn("Film release date {}", film.getReleaseDate());
             throw new ValidationException("Film release date: no earlier than 28.12.1895");
         }
         if (film.getDuration() == null || film.getDuration() <= 0) {
+            log.warn("Film duration {}", film.getDuration());
             throw new ValidationException("Film duration should not be negative");
         }
     }
