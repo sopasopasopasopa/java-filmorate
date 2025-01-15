@@ -15,9 +15,7 @@ import java.util.Set;
 @Data
 public class Film {
     Long id;
-
     String name;
-
     String description;
     LocalDate releaseDate;
     Long duration;
