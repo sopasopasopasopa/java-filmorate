@@ -40,13 +40,13 @@ public class InMemoryUserStorage implements UserStorage {
         if (updateUser.getId() == null) {
             throw new ValidationException("Id should not be empty");
         }
-        if (!users.containsKey(updateUser .getId())) {
+        if (!users.containsKey(updateUser.getId())) {
             throw new NotFoundException("User with this Id not found");
         }
         validateUser(updateUser);
 
         users.put(updateUser.getId(), updateUser);
-        log.info("User updated with Id: {}", updateUser .getId());
+        log.info("User updated with Id: {}", updateUser.getId());
         return updateUser;
     }
 
