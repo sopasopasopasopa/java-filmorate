@@ -15,8 +15,10 @@ import java.util.Set;
 @Data
 public class Film {
     Long id;
-    @NotBlank
+
+    @NotBlank(message = "Film title should not be empty")
     String name;
+
     String description;
     LocalDate releaseDate;
     Long duration;
