@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,4 +35,11 @@ public class ErrorHandler {
         log.error("ERROR: unexpected error: {}", e.getMessage());
         return new ErrorResponse("An unexpected error occurred.");
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationExceptions(ConstraintViolationException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
+
 }
