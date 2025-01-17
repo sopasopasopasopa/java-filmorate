@@ -1,6 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -9,6 +13,7 @@ import ru.yandex.practicum.filmorate.service.LikeService;
 import java.util.List;
 import java.util.Set;
 
+@Validated
 @RestController
 @RequestMapping("/films")
 public class FilmController {
@@ -47,7 +52,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> topFilms(@RequestParam(defaultValue = "10") Integer count) {
+    public List<Film> topFilms(@RequestParam(defaultValue = "10") @Positive Integer count) {
         return likeService.topTenPopularMovies(count);
     }
 
