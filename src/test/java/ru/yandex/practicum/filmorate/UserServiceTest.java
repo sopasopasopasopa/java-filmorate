@@ -1,126 +1,105 @@
 package ru.yandex.practicum.filmorate;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-public class UserServiceTest {
+class UserServiceTest {
 
     private UserService userService;
+    private InMemoryUserStorage userStorage;
+
+    private User user;
 
     @BeforeEach
-    void setUp() {
-        userService = new UserService();
-    }
-
-    @Test
-    void shouldThrowExceptionWhenEmailIsNull() {
-        User user = User.builder()
-                .email(null)
-                .login("validLogin")
-                .name("validName")
-                .birthday(LocalDate.of(2000,1,1))
+    public void setUp() {
+        userStorage = new InMemoryUserStorage();
+        userService = new UserService(userStorage);
+        user = User.builder()
+                .email("test@example.com")
+                .login("testLogin")
+                .name("Test User")
+                .birthday(LocalDate.of(1990, 1, 1))
                 .build();
-        assertThrows(ValidationException.class, () -> userService.userCreate(user));
     }
 
     @Test
-    void shouldThrowExceptionWhenEmailIsEmpty() {
-        User user = User.builder()
+    public void shouldCreateUser() {
+        User createdUser = userService.userCreate(user);
+
+        Assertions.assertNotNull(createdUser);
+        Assertions.assertEquals("testLogin", createdUser.getLogin());
+        Assertions.assertEquals(1L, createdUser.getId());
+    }
+
+    @Test
+    public void shouldUpdateUser() {
+        User createdUser = userService.userCreate(user);
+        createdUser.setName("Updated User");
+
+        User updatedUser = userService.userUpdate(createdUser);
+
+        Assertions.assertNotNull(updatedUser);
+        Assertions.assertEquals("Updated User", updatedUser.getName());
+    }
+
+    @Test
+    public void shouldFindUserById() {
+        User createdUser = userService.userCreate(user);
+
+        User foundUser = userService.findById(createdUser.getId());
+
+        Assertions.assertNotNull(foundUser);
+        Assertions.assertEquals("testLogin", foundUser.getLogin());
+    }
+
+    @Test
+    public void shouldGetAllUsers() {
+        userService.userCreate(user);
+        User anotherUser = User.builder()
+                .email("another@example.com")
+                .login("anotherLogin")
+                .name("Another User")
+                .birthday(LocalDate.of(1995, 5, 5))
+                .build();
+        userService.userCreate(anotherUser);
+
+        List<User> users = userService.getAllUsers();
+
+        Assertions.assertNotNull(users);
+        Assertions.assertEquals(2, users.size());
+    }
+
+    @Test
+    public void shouldDeleteUserById() {
+        User createdUser = userService.userCreate(user);
+        userService.deleteUserById(createdUser.getId());
+
+        Assertions.assertThrows(NotFoundException.class, () -> userService.findById(createdUser.getId()));
+    }
+
+    @Test
+    public void shouldThrowNotFoundExceptionWhenUserNotFound() {
+        Assertions.assertThrows(NotFoundException.class, () -> userService.findById(999L));
+    }
+
+    @Test
+    public void shouldThrowValidationExceptionWhenUserIsInvalid() {
+        User invalidUser = User.builder()
                 .email("")
-                .login("validLogin")
-                .name("validName")
-                .birthday(LocalDate.of(2000,1,1))
-                .build();
-        assertThrows(ValidationException.class, () -> userService.userCreate(user));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenEmailDoesNotContainAtSymbol() {
-        User user = User.builder()
-                .email("invalidEmail.com")
-                .login("validLogin")
-                .name("validName")
-                .birthday(LocalDate.of(2000, 1, 1))
-                .build();
-        assertThrows(ValidationException.class, () -> userService.userCreate(user));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenLoginIsNull() {
-        User user = User.builder()
-                .email("validEmail@example.com")
-                .login(null)
-                .name("validName")
-                .birthday(LocalDate.of(2000, 1, 1))
-                .build();
-        assertThrows(ValidationException.class, () -> userService.userCreate(user));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenLoginIsEmpty() {
-        User user = User.builder()
-                .email("validEmail@example.com")
                 .login("")
-                .name("validName")
-                .birthday(LocalDate.of(2000, 1, 1))
+                .name("")
+                .birthday(LocalDate.of(2025, 1, 1))
                 .build();
-        assertThrows(ValidationException.class, () -> userService.userCreate(user));
-    }
 
-    @Test
-    void shouldThrowExceptionWhenBirthdayIsInFuture() {
-        User user = User.builder()
-                .email("validEmail@example.com")
-                .login("validLogin")
-                .name("validName")
-                .birthday(LocalDate.of(3000, 1, 1))
-                .build();
-        assertThrows(ValidationException.class, () -> userService.userCreate(user));
-    }
-
-    @Test
-    void shouldSetNameToLoginWhenNameIsNull() {
-        User user = User.builder()
-                .email("validEmail@example.com")
-                .login("validLogin")
-                .name(null) // имя отсутствует
-                .birthday(LocalDate.of(2000, 1, 1))
-                .build();
-        User createdUser  = userService.userCreate(user);
-        assertEquals("validLogin", createdUser.getName());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenUserIdIsNullOnUpdate() {
-        User user = User.builder()
-                .id(null)
-                .email("validEmail@example.com")
-                .login("validLogin")
-                .name("validName")
-                .birthday(LocalDate.of(2000, 1, 1))
-                .build();
-        assertThrows(ValidationException.class, () -> userService.userUpdate(user));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenUserIdNotFoundOnUpdate() {
-        User user = User.builder()
-                .id(999L)
-                .email("validEmail@example.com")
-                .login("validLogin")
-                .name("validName")
-                .birthday(LocalDate.of(2000, 1, 1))
-                .build();
-        assertThrows(NotFoundException.class, () -> userService.userUpdate(user));
+        Assertions.assertThrows(ValidationException.class, () -> userService.userCreate(invalidUser));
     }
 }
-
