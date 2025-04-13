@@ -8,21 +8,18 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Film.
- */
-@Builder
 @Data
+@Builder
 public class Film {
-    Long id;
-    String name;
-    String description;
-    LocalDate releaseDate;
-    Long duration;
-
+    private Long id;
+    private String name;
+    private String description;
+    private LocalDate releaseDate;
+    private Long duration;
+    private Mpa mpa;
+    private Set<Genre> genres;
     @JsonIgnore
     @Builder.Default
-    Set<Long> userLikes = new HashSet<>();
-
-    int likes;
+    private Set<Long> userLikes = new HashSet<>();
+    private int likes;
 }
