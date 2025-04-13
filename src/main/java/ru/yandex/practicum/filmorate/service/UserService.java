@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 public class UserService {
-
     private final UserStorage userStorage;
 
     public UserService(UserStorage userStorage) {
@@ -24,7 +24,8 @@ public class UserService {
     }
 
     public User findById(Long userId) {
-        return userStorage.getUserById(userId);
+        return userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found"));
     }
 
     public List<User> getAllUsers() {
@@ -32,6 +33,10 @@ public class UserService {
     }
 
     public void deleteUserById(Long userId) {
+        // Сначала проверяем существование пользователя
+        if (userStorage.getUserById(userId).isEmpty()) {
+            throw new NotFoundException("User with ID " + userId + " not found");
+        }
         userStorage.deleteUserById(userId);
     }
 

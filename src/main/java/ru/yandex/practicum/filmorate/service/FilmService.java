@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -25,7 +26,8 @@ public class FilmService {
     }
 
     public Film findById(Long filmId) {
-        return filmStorage.getFilmById(filmId);
+        return filmStorage.getFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException("Film with id " + filmId + " not found"));
     }
 
     public List<Film> getAllFilms() {
