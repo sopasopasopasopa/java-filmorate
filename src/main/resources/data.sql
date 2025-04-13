@@ -15,10 +15,11 @@ MERGE INTO genres (genre_id, name) VALUES
 (5, 'Documentary'),
 (6, 'Action');
 
--- Sample Users
+-- Sample Users (добавлен user 3)
 INSERT INTO users (email, login, name, birthday) VALUES
 ('user1@example.com', 'user1', 'John Doe', '1990-01-01'),
-('user2@example.com', 'user2', 'Jane Smith', '1995-05-15');
+('user2@example.com', 'user2', 'Jane Smith', '1995-05-15'),
+('user3@example.com', 'user3', 'Mike Johnson', '2000-10-20');
 
 -- Sample Films
 INSERT INTO films (name, description, release_date, duration, mpa_id) VALUES
@@ -31,9 +32,10 @@ INSERT INTO film_genre (film_id, genre_id) VALUES
 (1, 6), -- Inception - Action
 (2, 2); -- Shawshank - Drama
 
--- Friendships
+-- Friendships (исправлено)
 INSERT INTO friendship (user_id, friend_id) VALUES
-(1, 2); -- User 1 is friends with User 2
+(1, 2),
+(2, 3);  -- Теперь user 3 существует
 
 -- Likes
 INSERT INTO likes (film_id, user_id) VALUES
