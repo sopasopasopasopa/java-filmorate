@@ -51,7 +51,7 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<Film> topFilms(@RequestParam(defaultValue = "10") @Positive Integer count) {
-        return likeService.topTenPopularMovies(count);
+        return likeService.getTopFilms(count);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
