@@ -7,7 +7,9 @@ import java.util.Optional;
 public interface GenreDao {
 
     List<Genre> getAllGenres();
+
     Optional<Genre> getGenreById(int id);
+
     List<Genre> getGenresByFilmId(long filmId);
 
 }
