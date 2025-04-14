@@ -16,11 +16,17 @@ public class UserService {
     }
 
     public User userCreate(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         return userStorage.addUser(user);
     }
 
-    public User userUpdate(User updateUser) {
-        return userStorage.updateUser(updateUser);
+    public User userUpdate(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        return userStorage.updateUser(user);
     }
 
     public User findById(Long userId) {
