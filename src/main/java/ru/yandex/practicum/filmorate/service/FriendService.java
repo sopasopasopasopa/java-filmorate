@@ -25,21 +25,13 @@ public class FriendService {
         User user = getUserById(userId);
         User friend = getUserById(friendId);
 
-        // Проверяем существование дружбы в обе стороны
-        if (user.getFriends().contains(friendId) || friend.getFriends().contains(userId)) {
-            log.warn("Friendship between {} and {} already exists", userId, friendId);
+        if (user.getFriends().contains(friendId)) {
+            log.warn("Friendship already exists");
             return;
         }
 
-        // Добавляем взаимную дружбу
         user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
-
-        // Сохраняем обоих пользователей
         userStorage.updateUser(user);
-        userStorage.updateUser(friend);
-
-        log.info("Mutual friendship created between {} and {}", userId, friendId);
     }
 
     public Set<Long> removeFriend(Long userId, Long friendId) {
