@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.genre.GenreDao;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaDao;
 
@@ -122,7 +123,10 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void loadGenres(Film film) {
-        film.setGenres(new HashSet<>(genreDao.getGenresByFilmId(film.getId())));
+        List<Genre> genres = genreDao.getGenresByFilmId(film.getId());
+        // Сортировка по id жанра для сохранения порядка
+        genres.sort(Comparator.comparingInt(Genre::getId));
+        film.setGenres(new LinkedHashSet<>(genres));
     }
 
     private void updateLikes(Film film) {
