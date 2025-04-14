@@ -36,13 +36,10 @@ public class FriendService {
 
     public Set<Long> removeFriend(long userId, Long friendId) {
         User user = getUserById(userId);
-        boolean removed = user.getFriends().remove(friendId);
-
-        if (!removed) {
-            log.warn("Friendship not found");
-            return user.getFriends();
+        if (!user.getFriends().contains(friendId)) {
+            throw new NotFoundException("Friend not found");
         }
-
+        user.getFriends().remove(friendId);
         userStorage.updateUser(user);
         return user.getFriends();
     }
