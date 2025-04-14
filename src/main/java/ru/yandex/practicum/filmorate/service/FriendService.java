@@ -34,24 +34,16 @@ public class FriendService {
         userStorage.updateUser(user);
     }
 
-    public Set<Long> removeFriend(Long userId, Long friendId) {
+    public Set<Long> removeFriend(long userId, Long friendId) {
         User user = getUserById(userId);
-        User friend = getUserById(friendId);
+        boolean removed = user.getFriends().remove(friendId);
 
-        // Удаляем дружбу в обе стороны
-        boolean removedFromUser = user.getFriends().remove(friendId);
-        boolean removedFromFriend = friend.getFriends().remove(userId);
-
-        if (!removedFromUser && !removedFromFriend) {
-            log.warn("No friendship found between {} and {}", userId, friendId);
+        if (!removed) {
+            log.warn("Friendship not found");
             return user.getFriends();
         }
 
-        // Сохраняем изменения
         userStorage.updateUser(user);
-        userStorage.updateUser(friend);
-
-        log.info("Mutual friendship removed between {} and {}", userId, friendId);
         return user.getFriends();
     }
 
