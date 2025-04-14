@@ -26,7 +26,9 @@ public class LikeService {
         this.userStorage = userStorage;
     }
 
-    public Set<Long> addLike(@NotNull Long filmId, @NotNull Long userId) {
+    public Set<Long> addLike(Long filmId, Long userId) {
+        Film film = filmStorage.getFilmById(filmId)
+                .orElseThrow(() -> new NotFoundException("Фильм не найден"));
         log.debug("Adding like from user {} to film {}", userId, filmId);
 
         Film likedFilm = filmStorage.getFilmById(filmId)
