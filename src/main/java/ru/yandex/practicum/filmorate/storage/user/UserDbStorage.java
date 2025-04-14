@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
@@ -52,15 +53,18 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
-    @Override
     public User updateUser(User user) {
-        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
-        jdbcTemplate.update(sql,
+        String sql = "UPDATE users SET email=?, login=?, name=?, birthday=? WHERE user_id=?";
+        int rowsUpdated = jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
                 user.getBirthday(),
                 user.getId());
+
+        if (rowsUpdated == 0) {
+            throw new NotFoundException("User not found");
+        }
 
         updateFriends(user);
         return user;
