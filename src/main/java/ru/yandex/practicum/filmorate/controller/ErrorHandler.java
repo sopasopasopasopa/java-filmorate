@@ -55,6 +55,4 @@ public class ErrorHandler {
         return new ErrorResponse(ex.getMessage());
     }
 
-    
-
 }
