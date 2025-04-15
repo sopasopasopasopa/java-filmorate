@@ -98,14 +98,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public boolean emailExists(String email) {
-        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, email) > 0;
+        String sql = "SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, email));
     }
 
     @Override
     public boolean loginExists(String login) {
-        String sql = "SELECT COUNT(*) FROM users WHERE login = ?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, login) > 0;
+        String sql = "SELECT EXISTS(SELECT 1 FROM users WHERE login = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, login));
     }
 
     private User mapRowToUser(ResultSet rs, int rowNum) throws SQLException {

@@ -1,5 +1,9 @@
 package ru.yandex.practicum.filmorate.service;
 
+import io.micrometer.common.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -11,6 +15,7 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserStorage userStorage;
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
@@ -24,24 +29,32 @@ public class UserService {
     }
 
     public User userUpdate(User user) {
-        User existingUser = userStorage.getUserById(user.getId())
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        try {
+            User existingUser = userStorage.getUserById(user.getId())
+                    .orElseThrow(() -> new NotFoundException("User not found"));
 
-        // Проверка уникальности email
-        if (!user.getEmail().equals(existingUser.getEmail()) && userStorage.emailExists(user.getEmail())) {
-            throw new ValidationException("Email already exists");
+            // Проверка уникальности с исключением текущего пользователя
+            if (!user.getEmail().equals(existingUser.getEmail())) {
+                if (userStorage.emailExists(user.getEmail())) {
+                    throw new ValidationException("Email already registered");
+                }
+            }
+
+            if (!user.getLogin().equals(existingUser.getLogin())) {
+                if (userStorage.loginExists(user.getLogin())) {
+                    throw new ValidationException("Login already taken");
+                }
+            }
+
+            if (StringUtils.isBlank(user.getName())) {
+                user.setName(user.getLogin());
+            }
+
+            return userStorage.updateUser(user);
+        } catch (DataAccessException ex) {
+            log.error("Database error during user update", ex);
+            throw new RuntimeException("Database operation failed");
         }
-
-        // Проверка уникальности login
-        if (!user.getLogin().equals(existingUser.getLogin()) && userStorage.loginExists(user.getLogin())) {
-            throw new ValidationException("Login already exists");
-        }
-
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
-        return userStorage.updateUser(user);
     }
 
     public User findById(Long userId) {

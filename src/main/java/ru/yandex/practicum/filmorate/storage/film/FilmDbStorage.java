@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,7 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final GenreDao genreDao;
     private final MpaDao mpaDao;
-    private Logger log;
+    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDao genreDao, MpaDao mpaDao) {
         this.jdbcTemplate = jdbcTemplate;

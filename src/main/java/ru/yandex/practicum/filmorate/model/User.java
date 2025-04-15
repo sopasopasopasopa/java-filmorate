@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
@@ -15,22 +16,20 @@ import java.util.Set;
 @Builder
 @Data
 public class User {
-    Long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
 
-    @Email(message = "Некорректный формат email")
+    @Email
     private String email;
 
-
-    @NotBlank(message = "Логин не может быть пустым")
-    @Pattern(regexp = "\\S+", message = "Логин не может содержать пробелы")
+    @NotBlank
     private String login;
 
-    String name;
+    private String name;
 
-    @PastOrPresent(message = "Дата рождения не может быть в будущем") // Добавить
+    @PastOrPresent
     private LocalDate birthday;
 
     @JsonIgnore
-    @Builder.Default
-    Set<Long> friends = new HashSet<>();
+    private Set<Long> friends = new HashSet<>();
 }
