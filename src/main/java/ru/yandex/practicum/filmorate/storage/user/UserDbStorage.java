@@ -96,6 +96,18 @@ public class UserDbStorage implements UserStorage {
         log.info("Cleared all users and related data");
     }
 
+    @Override
+    public boolean emailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, email) > 0;
+    }
+
+    @Override
+    public boolean loginExists(String login) {
+        String sql = "SELECT COUNT(*) FROM users WHERE login = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, login) > 0;
+    }
+
     private User mapRowToUser(ResultSet rs, int rowNum) throws SQLException {
         return User.builder()
                 .id(rs.getLong("user_id"))

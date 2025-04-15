@@ -18,4 +18,8 @@ public interface UserStorage {
     Optional<User> getUserById(Long id);
 
     void clear();
+
+    boolean emailExists(String email);
+
+    boolean loginExists(String login);
 }

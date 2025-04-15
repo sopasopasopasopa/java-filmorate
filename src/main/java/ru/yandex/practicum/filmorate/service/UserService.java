@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -23,9 +24,23 @@ public class UserService {
     }
 
     public User userUpdate(User user) {
+        User existingUser = userStorage.getUserById(user.getId())
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        // Проверка уникальности email
+        if (!user.getEmail().equals(existingUser.getEmail()) && userStorage.emailExists(user.getEmail())) {
+            throw new ValidationException("Email already exists");
+        }
+
+        // Проверка уникальности login
+        if (!user.getLogin().equals(existingUser.getLogin()) && userStorage.loginExists(user.getLogin())) {
+            throw new ValidationException("Login already exists");
+        }
+
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
+
         return userStorage.updateUser(user);
     }
 
