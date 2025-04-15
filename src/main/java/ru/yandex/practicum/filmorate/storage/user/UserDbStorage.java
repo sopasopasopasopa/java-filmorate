@@ -53,8 +53,11 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
+    @Override
+    @Transactional
     public User updateUser(User user) {
-        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
+        // Обновление основных данных
+        String sql = "UPDATE users SET email=?, login=?, name=?, birthday=? WHERE user_id=?";
         int updated = jdbcTemplate.update(
                 sql,
                 user.getEmail(),
@@ -65,11 +68,12 @@ public class UserDbStorage implements UserStorage {
         );
 
         if (updated == 0) {
-            throw new NotFoundException("User with ID " + user.getId() + " not found");
+            throw new NotFoundException("User not found");
         }
 
-        // Добавляем обновление друзей
+        // Отдельно обновляем друзей
         updateFriends(user);
+
         return user;
     }
 
@@ -115,15 +119,19 @@ public class UserDbStorage implements UserStorage {
     }
 
     private void updateFriends(User user) {
-        String deleteSql = "DELETE FROM friendship WHERE user_id = ?";
-        jdbcTemplate.update(deleteSql, user.getId());
+        // Удаляем все текущие дружеские связи пользователя
+        jdbcTemplate.update("DELETE FROM friendship WHERE user_id = ?", user.getId());
 
+        // Добавляем новые связи только если есть друзья
         if (!user.getFriends().isEmpty()) {
-            String insertSql = "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?)";
             List<Object[]> batchArgs = user.getFriends().stream()
                     .map(friendId -> new Object[]{user.getId(), friendId})
                     .collect(Collectors.toList());
-            jdbcTemplate.batchUpdate(insertSql, batchArgs);
+
+            jdbcTemplate.batchUpdate(
+                    "INSERT INTO friendship (user_id, friend_id) VALUES (?, ?)",
+                    batchArgs
+            );
         }
     }
 }

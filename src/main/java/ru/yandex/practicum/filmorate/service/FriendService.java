@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -17,38 +18,31 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FriendService {
     private final UserStorage userStorage;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FriendService(UserStorage userStorage) {
+    public FriendService(UserStorage userStorage, JdbcTemplate jdbcTemplate) {
         this.userStorage = userStorage;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Transactional
     public void addFriend(Long userId, Long friendId) {
-
         if (userId.equals(friendId)) {
-            throw new ValidationException("User cannot add himself as friend");
+            throw new ValidationException("Cannot add yourself as friend");
         }
 
         User user = getUserById(userId);
         User friend = getUserById(friendId);
 
-        // Проверяем существование пользователей
-        if (!userStorage.getUserById(userId).isPresent() ||
-                !userStorage.getUserById(friendId).isPresent()) {
-            throw new NotFoundException("User not found");
-        }
-
+        // Проверяем существование дружбы
         if (user.getFriends().contains(friendId)) {
             return;
         }
 
-        // Добавляем дружбу в обоих направлениях
+        // Добавляем только одностороннюю связь
         user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
-
-        userStorage.updateUser(user);
-        userStorage.updateUser(friend);
+        userStorage.updateUser(user); // Только user → friend
     }
 
     public Set<Long> removeFriend(long userId, Long friendId) {
@@ -62,8 +56,14 @@ public class FriendService {
     }
 
     public List<User> getFriends(Long userId) {
-        User user = getUserById(userId);
-        return user.getFriends().stream()
+        String sql = "SELECT friend_id FROM friendship WHERE user_id = ?";
+        List<Long> friendIds = jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> rs.getLong("friend_id"),
+                userId
+        );
+
+        return friendIds.stream()
                 .map(this::getUserById)
                 .collect(Collectors.toList());
     }
