@@ -62,14 +62,8 @@ public class FriendService {
     }
 
     public List<User> getFriends(Long userId) {
-        String sql = "SELECT friend_id FROM friendship WHERE user_id = ?";
-        List<Long> friendIds = jdbcTemplate.query(
-                sql,
-                (rs, rowNum) -> rs.getLong("friend_id"),
-                userId
-        );
-
-        return friendIds.stream()
+        User user = getUserById(userId);
+        return user.getFriends().stream()
                 .map(this::getUserById)
                 .collect(Collectors.toList());
     }
