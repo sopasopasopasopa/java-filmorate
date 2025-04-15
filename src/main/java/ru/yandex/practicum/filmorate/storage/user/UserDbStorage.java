@@ -54,23 +54,19 @@ public class UserDbStorage implements UserStorage {
     }
 
     public User updateUser(User user) {
-
-        getUserById(user.getId()).orElseThrow(() ->
-                new NotFoundException("User not found"));
-
-        String sql = "UPDATE users SET email=?, login=?, name=?, birthday=? WHERE user_id=?";
-        int rowsUpdated = jdbcTemplate.update(sql,
+        String sql = "UPDATE users SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
+        int updated = jdbcTemplate.update(
+                sql,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
                 user.getBirthday(),
-                user.getId());
+                user.getId()
+        );
 
-        if (rowsUpdated == 0) {
-            throw new NotFoundException("User not found");
+        if (updated == 0) {
+            throw new NotFoundException("User with ID " + user.getId() + " not found");
         }
-
-        updateFriends(user);
         return user;
     }
 

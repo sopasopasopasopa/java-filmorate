@@ -23,6 +23,8 @@ public class UserService {
     }
 
     public User userUpdate(User user) {
+        findById(user.getId());
+
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
